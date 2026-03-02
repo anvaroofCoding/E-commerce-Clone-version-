@@ -5,6 +5,7 @@ import Navbar from "@/app/Shared/navbar";
 import MobileNavbar from "./Shared/mobile.navbar";
 import NavbarSearch from "./Shared/search.navbar";
 import AdvertisingNavbar from "./Shared/advertising.navbar";
+import { ForDrawerProducts } from "./bin/drawer.products/for.drawer.products";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,6 +32,8 @@ export default function RootLayout({ children }) {
           <NavbarSearch />
           <Navbar />
           <MobileNavbar />
+          <ForDrawerProducts />
+
           {children}
         </Providers>
       </body>

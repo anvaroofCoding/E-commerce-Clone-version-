@@ -24,7 +24,7 @@ export default function Home() {
       {/* Product Grid */}
       <div className="max-w-[1400px] mx-auto pt-6 lg:w-[70%] w-[95%]">
         <h1 className="text-xl flex items-center justify-start gap-2 mb-5 cursor-pointer">
-          <span>Bizning tavarlarimiz</span> <ChevronRight />
+          <span>Our products</span> <ChevronRight />
         </h1>
         <div
           className="grid lg:gap-5 gap-2
@@ -52,7 +52,7 @@ export default function Home() {
             "bg-green-600 hover:bg-green-700 duration-300 cursor-pointer"
           }
         >
-          Barcha maxsulotlar <IconChevronRight stroke={2} />
+          Our products <IconChevronRight stroke={2} />
         </Button>
       </div>
     </div>

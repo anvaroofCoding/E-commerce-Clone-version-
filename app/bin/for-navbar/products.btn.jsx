@@ -1,6 +1,6 @@
 "use client";
 import { useGet_CategoriesQuery } from "@/app/features/api/pokemon_Api";
-import { toggle } from "@/app/features/navbar/navbar.moda";
+import { toggle } from "@/app/features/navbar/navbarSlice";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IconChartCohort, IconChevronRight, IconX } from "@tabler/icons-react";
@@ -23,7 +23,7 @@ export default function ProductsBtn() {
         ) : (
           <IconChartCohort stroke={2} size={17} />
         )}
-        Katalog
+        Catalog
       </Button>
 
       <div
