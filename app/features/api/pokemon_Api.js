@@ -16,7 +16,14 @@ export const pokemonApi = createApi({
 
     // GET all products
     get_Products: build.query({
-      query: () => "/",
+      query: ({ search = "", limit = 10, skip = 10 }) =>
+        `/search?q=${search}&limit=${limit}&skip=${skip}`,
+      providesTags: ["Products"],
+    }),
+
+    // GET for Search products
+    get_ProductsSearch: build.query({
+      query: ({ search = "" }) => `/search?q=${search}`,
       providesTags: ["Products"],
     }),
 
@@ -58,4 +65,5 @@ export const {
   useAdd_ProductMutation,
   useUpdate_ProductMutation,
   useDelete_ProductMutation,
+  useGet_ProductsSearchQuery,
 } = pokemonApi;

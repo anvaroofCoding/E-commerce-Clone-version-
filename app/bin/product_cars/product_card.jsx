@@ -70,7 +70,7 @@ export default function ProductsCards({ product, loading }) {
         </CardContent>
 
         {/* Actions */}
-        <CardFooter className="flex justify-between px-2 pt-1">
+        <CardFooter className="flex justify-between gap-2 px-2 pt-1">
           {loading ? (
             <div className="grid grid-cols-6 w-full gap-2">
               <Skeleton className="h-8 w-full rounded col-span-5" />

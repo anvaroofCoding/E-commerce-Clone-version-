@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import Image from "next/image";
 import React, { useMemo, useState } from "react";
+import { useGet_ProductsSearchQuery } from "../features/api/pokemon_Api";
 
 const searchData = [
   {
@@ -28,6 +29,9 @@ const searchData = [
 
 export default function NavbarSearch() {
   const [search, setSearch] = useState("");
+  const { data, isLoading: ProductsLoading } = useGet_ProductsSearchQuery({
+    search,
+  });
   const filteredData = useMemo(
     () =>
       searchData.filter((item) =>
@@ -60,25 +64,44 @@ export default function NavbarSearch() {
 
       {/* Dropdown */}
       {search && (
-        <div className="absolute mt-2 w-full bg-background border rounded-xl shadow-xl max-h-72 overflow-y-auto z-50 p-2 space-y-2">
-          {filteredData.length > 0 ? (
-            filteredData.map((item) => (
+        <div
+          className="absolute top-full left-0 mt-3 w-full 
+                  bg-white dark:bg-zinc-900 
+                  border border-gray-200 dark:border-zinc-800 
+                  rounded-2xl shadow-2xl 
+                  max-h-96 overflow-y-auto 
+                  z-50 p-3 space-y-2
+                  backdrop-blur-xl"
+        >
+          {data?.total > 0 ? (
+            data?.products.map((item) => (
               <Card
                 key={item.id}
-                className="cursor-pointer hover:bg-muted transition"
+                className="group cursor-pointer border-0 shadow-none 
+                     hover:bg-gray-50 dark:hover:bg-zinc-800 
+                     transition-all duration-200 rounded-xl"
               >
-                <CardContent className="p-3 flex gap-3 items-center">
-                  <div className="relative w-14 h-14 rounded-md overflow-hidden flex-shrink-0">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-cover"
+                <CardContent className="p-3 flex gap-4 items-center">
+                  {/* IMAGE */}
+                  <div
+                    className="relative w-16 h-16 rounded-xl 
+                            overflow-hidden flex-shrink-0 
+                            border border-gray-200 dark:border-zinc-700"
+                  >
+                    <img
+                      src={item.thumbnail}
+                      alt={item.brand}
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-sm">{item.title}</p>
-                    <p className="text-xs text-muted-foreground">
+
+                  {/* INFO */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">
+                      {item.brand}
+                    </p>
+
+                    <p className="text-xs text-muted-foreground line-clamp-2">
                       {item.description}
                     </p>
                   </div>
@@ -86,9 +109,9 @@ export default function NavbarSearch() {
               </Card>
             ))
           ) : (
-            <p className="text-sm text-muted-foreground text-center py-4">
+            <div className="py-8 text-center text-sm text-muted-foreground">
               Hech narsa topilmadi
-            </p>
+            </div>
           )}
         </div>
       )}

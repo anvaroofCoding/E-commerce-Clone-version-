@@ -14,7 +14,10 @@ import {
   IconShoppingCartFilled,
 } from "@tabler/icons-react";
 import { useSelector } from "react-redux";
-import { useGet_CategoriesQuery } from "../features/api/pokemon_Api";
+import {
+  useGet_CategoriesQuery,
+  useGet_ProductsSearchQuery,
+} from "../features/api/pokemon_Api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const navItems = [
@@ -24,29 +27,9 @@ const navItems = [
   { name: "Savat", icon: IconShoppingCartFilled },
 ];
 
-const searchData = [
-  {
-    id: 1,
-    title: "React Dashboard",
-    description: "Modern admin panel",
-    image: "/images/dashboard.jpg",
-  },
-  {
-    id: 2,
-    title: "Next.js Blog",
-    description: "SEO optimized blog",
-    image: "/images/blog.jpg",
-  },
-  {
-    id: 3,
-    title: "E-commerce App",
-    description: "Online shopping system",
-    image: "/images/shop.jpg",
-  },
-];
-
 export default function Navbar() {
   const scrollRef = useRef(null);
+  const [search, setSearch] = useState("");
   const scroll = (direction) => {
     if (scrollRef.current) {
       const scrollAmount = 150;
@@ -56,19 +39,11 @@ export default function Navbar() {
       });
     }
   };
-
   const suchOpen = useSelector((state) => state.navbar.value);
   const { data: categories, isLoading } = useGet_CategoriesQuery();
-
-  // Search state
-  const [search, setSearch] = useState("");
-  const filteredData = useMemo(
-    () =>
-      searchData.filter((item) =>
-        item.title.toLowerCase().includes(search.toLowerCase()),
-      ),
-    [search],
-  );
+  const { data, isLoading: ProductsLoading } = useGet_ProductsSearchQuery({
+    search,
+  });
 
   return (
     <div
@@ -77,7 +52,7 @@ export default function Navbar() {
       }`}
     >
       {/* Top Row */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-5 md:gap-10 py-5">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-5 md:gap-10 ">
         {/* Logo */}
         {isLoading ? (
           <Skeleton className="w-40 h-20 rounded-md" />
@@ -87,7 +62,7 @@ export default function Navbar() {
 
         {/* Search */}
         <div className="w-full  relative">
-          {isLoading ? (
+          {isLoading || ProductsLoading ? (
             <Skeleton className="h-10 w-full rounded-md" />
           ) : (
             <>
@@ -109,25 +84,44 @@ export default function Navbar() {
 
               {/* Dropdown */}
               {search && (
-                <div className="absolute mt-2 w-full bg-background border rounded-xl shadow-xl max-h-72 overflow-y-auto z-50 p-2 space-y-2">
-                  {filteredData.length > 0 ? (
-                    filteredData.map((item) => (
+                <div
+                  className="absolute top-full left-0 mt-3 w-full 
+                  bg-white dark:bg-zinc-900 
+                  border border-gray-200 dark:border-zinc-800 
+                  rounded-2xl shadow-2xl 
+                  max-h-96 overflow-y-auto 
+                  z-50 p-3 space-y-2
+                  backdrop-blur-xl"
+                >
+                  {data?.total > 0 ? (
+                    data?.products.map((item) => (
                       <Card
                         key={item.id}
-                        className="cursor-pointer hover:bg-muted transition"
+                        className="group cursor-pointer border-0 shadow-none 
+                     hover:bg-gray-50 dark:hover:bg-zinc-800 
+                     transition-all duration-200 rounded-xl"
                       >
-                        <CardContent className="p-3 flex gap-3 items-center">
-                          <div className="relative w-14 h-14 rounded-md overflow-hidden flex-shrink-0">
-                            <Image
-                              src={item.image}
-                              alt={item.title}
-                              fill
-                              className="object-cover"
+                        <CardContent className="p-3 flex gap-4 items-center">
+                          {/* IMAGE */}
+                          <div
+                            className="relative w-16 h-16 rounded-xl 
+                            overflow-hidden flex-shrink-0 
+                            border border-gray-200 dark:border-zinc-700"
+                          >
+                            <img
+                              src={item.thumbnail}
+                              alt={item.brand}
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           </div>
-                          <div className="flex-1">
-                            <p className="font-medium text-sm">{item.title}</p>
-                            <p className="text-xs text-muted-foreground">
+
+                          {/* INFO */}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm truncate">
+                              {item.brand}
+                            </p>
+
+                            <p className="text-xs text-muted-foreground line-clamp-2">
                               {item.description}
                             </p>
                           </div>
@@ -135,9 +129,9 @@ export default function Navbar() {
                       </Card>
                     ))
                   ) : (
-                    <p className="text-sm text-muted-foreground text-center py-4">
+                    <div className="py-8 text-center text-sm text-muted-foreground">
                       Hech narsa topilmadi
-                    </p>
+                    </div>
                   )}
                 </div>
               )}
@@ -185,7 +179,7 @@ export default function Navbar() {
         {/* Left button */}
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0 bottom-3 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100"
+          className="absolute left-0  z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -193,7 +187,7 @@ export default function Navbar() {
         {/* Scroll container */}
         <div
           ref={scrollRef}
-          className="flex gap-3 overflow-x-scroll px-10 scrollbar-hide pb-2"
+          className="flex gap-3 overflow-x-scroll px-10 scrollbar-hide pb-1"
         >
           {isLoading
             ? Array.from({ length: 15 }).map((_, index) => (
@@ -205,7 +199,7 @@ export default function Navbar() {
             : categories?.map((item, index) => (
                 <div
                   key={index}
-                  className="flex-shrink-0 px-4 py-2 bg-gray-100 rounded-lg whitespace-nowrap cursor-pointer"
+                  className="flex-shrink-0 px-2 py-1 bg-gray-100 rounded-lg whitespace-nowrap cursor-pointer text-sm"
                 >
                   {item?.name}
                 </div>
@@ -215,7 +209,7 @@ export default function Navbar() {
         {/* Right button */}
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 bottom-3 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100"
+          className="absolute right-0 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
