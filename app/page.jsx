@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useGet_ProductsQuery } from "./features/api/pokemon_Api";
 import ProductsCards from "./bin/product_cars/product_card";
 import { Carusell_Advertising } from "./bin/carusell_created/caresell_advertising";
@@ -10,11 +10,24 @@ import { IconChevronRight } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const { data, isLoading } = useGet_ProductsQuery();
+  const { data, isLoading } = useGet_ProductsQuery({
+    search: "",
+    limit: 60,
+    skip: 1,
+  });
+  const [star, setStar] = useState([]);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("star") || "[]");
+    setStar(stored);
+  }, []);
+
   const router = useRouter();
+
   const GetPRoducts = () => {
-    router.push("products");
+    router.push("/products");
   };
+  console.log(star);
 
   // 100 ta loading placeholder
   const placeholderArray = Array.from({ length: 100 });

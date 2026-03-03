@@ -1,18 +1,52 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart } from "lucide-react";
+import { ShoppingCart, Heart, HeartFilled } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch } from "react-redux";
 import { openDrawer } from "@/app/features/navbar/navbarSlice";
-import { ForDrawerProducts } from "../drawer.products/for.drawer.products";
+import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 
 export default function ProductsCards({ product, loading }) {
   const dispatch = useDispatch();
+  const [liked, setLiked] = useState(false);
+  useEffect(() => {
+    if (!product?.id) return;
+    try {
+      const existing = JSON.parse(localStorage.getItem("star") || "[]");
+      setLiked(existing.some((i) => i.id === product.id));
+    } catch {
+      setLiked(false);
+    }
+  }, [product?.id]);
+
+  // Toggle like
+  function postStar(item) {
+    if (!item?.id) return;
+    try {
+      const existing = JSON.parse(localStorage.getItem("star") || "[]");
+      const isExist = existing.find((i) => i.id === item.id);
+
+      if (!isExist) {
+        existing.push(item); // Add
+        setLiked(true);
+      } else {
+        // Remove if already liked
+        const filtered = existing.filter((i) => i.id !== item.id);
+        localStorage.setItem("star", JSON.stringify(filtered));
+        setLiked(false);
+        return;
+      }
+
+      localStorage.setItem("star", JSON.stringify(existing));
+    } catch (error) {
+      console.error("Failed to save star item:", error);
+    }
+  }
   const discountedPrice =
     !loading && product
       ? (
@@ -86,8 +120,18 @@ export default function ProductsCards({ product, loading }) {
               >
                 Add <ShoppingCart size={16} className="font-bold" />
               </Button>
-              <Button size="sm" variant="ghost">
-                <Heart size={16} />
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  postStar(product);
+                }}
+              >
+                {liked ? (
+                  <IconHeartFilled size={16} className="text-red-500" />
+                ) : (
+                  <IconHeart stroke={2} size={16} />
+                )}
               </Button>
             </>
           )}

@@ -19,6 +19,7 @@ import {
   useGet_ProductsSearchQuery,
 } from "../features/api/pokemon_Api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const navItems = [
   { name: "Kirish", icon: IconLogin },
@@ -47,7 +48,7 @@ export default function Navbar() {
 
   return (
     <div
-      className={`container px-5 xl:block hidden bg-white sticky top-5 pb-3 duration-300 z-10 ${
+      className={`container px-5 xl:block hidden bg-white sticky py-2 top-5 pb-3 duration-300 z-10 ${
         suchOpen ? "rounded-t-xl" : "rounded-xl"
       }`}
     >
@@ -55,9 +56,11 @@ export default function Navbar() {
       <div className="flex flex-col md:flex-row items-center justify-between gap-5 md:gap-10 ">
         {/* Logo */}
         {isLoading ? (
-          <Skeleton className="w-40 h-20 rounded-md" />
+          <Skeleton className="w-40 h-10 rounded-md" />
         ) : (
-          <img src="/logo.png" alt="Logo" className="w-30" />
+          <Link href={"/"}>
+            <img src="/logo.png" alt="Logo" className="w-40" />
+          </Link>
         )}
 
         {/* Search */}
@@ -175,11 +178,11 @@ export default function Navbar() {
       </div>
 
       {/* Scrollable Categories */}
-      <div className="relative flex items-center ">
+      <div className="relative flex items-center mt-2 ">
         {/* Left button */}
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0  z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100"
+          className="absolute left-0  z-10 p-1 bg-white rounded-full shadow hover:bg-gray-100"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -209,7 +212,7 @@ export default function Navbar() {
         {/* Right button */}
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 z-10 p-2 bg-white rounded-full shadow hover:bg-gray-100"
+          className="absolute right-0 z-10 p-1 bg-white rounded-full shadow hover:bg-gray-100"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
