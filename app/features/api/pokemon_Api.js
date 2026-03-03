@@ -27,6 +27,12 @@ export const pokemonApi = createApi({
       providesTags: ["Products"],
     }),
 
+    // GET for Search products
+    getIDProduct: build.query({
+      query: (id) => `/${id}`,
+      providesTags: ["Products"],
+    }),
+
     // POST / add product
     add_Product: build.mutation({
       query: (newProduct) => ({
@@ -60,6 +66,7 @@ export const pokemonApi = createApi({
 
 // ✅ auto generated hooks
 export const {
+  useGetIDProductQuery,
   useGet_CategoriesQuery,
   useGet_ProductsQuery,
   useAdd_ProductMutation,

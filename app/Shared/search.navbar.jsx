@@ -5,6 +5,7 @@ import { Search, X } from "lucide-react";
 import Image from "next/image";
 import React, { useMemo, useState } from "react";
 import { useGet_ProductsSearchQuery } from "../features/api/pokemon_Api";
+import { useParams } from "next/navigation";
 
 const searchData = [
   {
@@ -28,6 +29,7 @@ const searchData = [
 ];
 
 export default function NavbarSearch() {
+  const { id } = useParams();
   const [search, setSearch] = useState("");
   const { data, isLoading: ProductsLoading } = useGet_ProductsSearchQuery({
     search,
@@ -41,7 +43,9 @@ export default function NavbarSearch() {
   );
 
   return (
-    <div className="block xl:hidden bg-white px-5 sticky top-0  duration-300 z-10 py-3">
+    <div
+      className={`xl:hidden bg-white px-5 sticky top-0  duration-300 z-10 py-3 ${id ? "hidden" : "block"}`}
+    >
       <div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

@@ -10,8 +10,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch } from "react-redux";
 import { openDrawer } from "@/app/features/navbar/navbarSlice";
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 export default function ProductsCards({ product, loading }) {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
   useEffect(() => {
@@ -72,7 +74,12 @@ export default function ProductsCards({ product, loading }) {
           )}
         </div>
 
-        <CardContent className="px-3 flex-1 flex flex-col justify-between">
+        <CardContent
+          onClick={() => {
+            router.push(`/products/${product.id}`);
+          }}
+          className="px-3 flex-1 flex flex-col justify-between cursor-pointer"
+        >
           {/* Title & Description */}
           {loading ? (
             <Skeleton className="h-4 w-3/4 mb-1" />
