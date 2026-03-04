@@ -21,6 +21,11 @@ export const pokemonApi = createApi({
       providesTags: ["Products"],
     }),
 
+    get_ProductsSort: build.query({
+      query: ({ category = "" }) => `/category/${category}`,
+      providesTags: ["Products"],
+    }),
+
     // GET for Search products
     get_ProductsSearch: build.query({
       query: ({ search = "" }) => `/search?q=${search}`,
@@ -66,6 +71,7 @@ export const pokemonApi = createApi({
 
 // ✅ auto generated hooks
 export const {
+  useGet_ProductsSortQuery,
   useGetIDProductQuery,
   useGet_CategoriesQuery,
   useGet_ProductsQuery,

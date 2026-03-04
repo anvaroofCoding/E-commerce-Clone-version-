@@ -20,6 +20,7 @@ import {
 } from "../features/api/pokemon_Api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { name: "Kirish", icon: IconLogin },
@@ -29,6 +30,7 @@ const navItems = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const scrollRef = useRef(null);
   const [search, setSearch] = useState("");
   const scroll = (direction) => {
@@ -202,6 +204,9 @@ export default function Navbar() {
             : categories?.map((item, index) => (
                 <div
                   key={index}
+                  onClick={() => {
+                    router.push(`/brands/${item?.slug}`);
+                  }}
                   className="flex-shrink-0 px-2 py-1 bg-gray-100 rounded-lg whitespace-nowrap cursor-pointer text-sm"
                 >
                   {item?.name}
