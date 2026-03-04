@@ -28,13 +28,40 @@ import {
 } from "@tabler/icons-react";
 
 import { useDispatch, useSelector } from "react-redux";
+import { Minus, Plus } from "lucide-react";
 
 export function ForDrawerProducts() {
+  const cart = JSON.parse(localStorage.getItem("cart") ?? "[]");
+  const existing = cart.find((item) => item.id === product.id);
   const dispatch = useDispatch();
   const { isOpen, product_data } = useSelector((state) => state.navbar);
 
   const [productLink, setProductLink] = useState("");
   const [copied, setCopied] = useState(false);
+
+  function addToCart(product) {
+    if (existing) {
+      if (existing.count < product.stock) {
+        existing.count += 1;
+      }
+    } else {
+      cart.push({ ...product, count: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+
+  function increaseCount() {
+    const cart = JSON.parse(localStorage.getItem("cart") ?? "[]");
+
+    const item = cart.find((p) => p.id === product_data.id);
+
+    if (item && item.count < item.stock) {
+      item.count += 1;
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
 
   useEffect(() => {
     if (product_data?.id) {
@@ -192,9 +219,30 @@ export function ForDrawerProducts() {
         </div>
 
         <DrawerFooter className="border-t">
-          <Button className="bg-green-600 hover:bg-green-700 transition">
-            Add <IconShoppingCart size={18} />
-          </Button>
+          {existing ? (
+            <div className="grid grid-cols-3 gap-10 items-center">
+              <Button
+                className="bg-red-600 hover:bg-red-700 transition"
+                onClick={increaseCount}
+              >
+                <Minus size={18} />
+              </Button>
+              <p className="text-center">10</p>
+              <Button
+                className="bg-green-600 hover:bg-green-700 transition"
+                onClick={addToCart}
+              >
+                <Plus size={18} />
+              </Button>
+            </div>
+          ) : (
+            <Button
+              className="bg-green-600 hover:bg-green-700 transition"
+              onClick={addToCart}
+            >
+              Add <IconShoppingCart size={18} />
+            </Button>
+          )}
 
           <DrawerClose asChild>
             <Button variant="secondary" onClick={() => dispatch(closeDrawer())}>

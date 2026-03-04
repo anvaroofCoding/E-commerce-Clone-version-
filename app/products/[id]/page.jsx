@@ -95,11 +95,9 @@ export default function Page() {
     }
   };
 
-  if (isLoading) return <ProductSkeleton />;
-
   const discountedPrice = (
-    data.price -
-    (data.price * data.discountPercentage) / 100
+    data?.price -
+    (data?.price * data?.discountPercentage) / 100
   ).toFixed(2);
 
   // ===== JSX =====
@@ -148,180 +146,248 @@ export default function Page() {
         {/* ===== Left: Images ===== */}
         <div className="space-y-6 xl:block hidden">
           <div className="relative w-full h-[400px] bg-white rounded-2xl overflow-hidden flex items-center justify-center">
-            <img
-              src={selectedImage || images[0]}
-              alt={data?.title}
-              className="object-contain w-full h-full"
-            />
+            {isLoading ? (
+              <Skeleton className={"w-[97%] h-[95%]"} />
+            ) : (
+              <img
+                src={selectedImage || images[0]}
+                alt={data?.title}
+                className="object-contain w-full h-full"
+              />
+            )}
           </div>
 
           {/* Carousel Thumbnails */}
           <Carousel className="w-full">
             <CarouselContent>
-              {images.map((img, index) => (
-                <CarouselItem key={index} className="basis-1/4">
-                  <div className="p-1">
-                    <Card
-                      onClick={() => setSelectedImage(img)}
-                      className={`cursor-pointer border-2 transition ${
-                        selectedImage === img
-                          ? "border-green-600"
-                          : "border-transparent"
-                      }`}
-                    >
-                      <CardContent className="flex aspect-square items-center justify-center p-2">
-                        <img
-                          src={img}
-                          alt="thumb"
-                          className="object-contain w-full h-full"
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
+              {isLoading
+                ? Array.from({ length: 4 }).map((_, index) => (
+                    <CarouselItem key={index} className="basis-1/4">
+                      <div className="p-1">
+                        <Skeleton className="aspect-square w-full rounded-xl" />
+                      </div>
+                    </CarouselItem>
+                  ))
+                : images.map((img, index) => (
+                    <CarouselItem key={index} className="basis-1/4">
+                      <div className="p-1">
+                        <Card
+                          onClick={() => setSelectedImage(img)}
+                          className={`cursor-pointer border-2 transition ${
+                            selectedImage === img
+                              ? "border-green-600"
+                              : "border-transparent"
+                          }`}
+                        >
+                          <CardContent className="flex aspect-square items-center justify-center p-2">
+                            <img
+                              src={img}
+                              alt="thumb"
+                              className="object-contain w-full h-full"
+                            />
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </CarouselItem>
+                  ))}
             </CarouselContent>
           </Carousel>
         </div>
 
         {/* Mobile Carousel */}
-        <div className="mx-auto xl:hidden block">
-          <Carousel setApi={setApi} className="w-full max-w-xs">
-            <CarouselContent>
-              {images.map((img, index) => (
-                <CarouselItem key={index}>
-                  <Card className="m-px">
-                    <CardContent className="flex aspect-square items-center justify-center p-2">
-                      <img
-                        src={img}
-                        alt={data?.title}
-                        className="object-contain w-full h-full"
-                      />
-                    </CardContent>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-
-          <div className="flex justify-center gap-2 py-2">
-            {Array.from({ length: count }).map((_, index) => (
-              <span
-                key={index}
-                className={`h-2 w-2 rounded-full transition-all ${
-                  current - 1 === index ? "bg-green-600 w-3" : "bg-gray-300"
-                }`}
-              />
-            ))}
+        {isLoading ? (
+          <div className="mx-auto xl:hidden block bg-white p-2 w-[95%] rounded-xl ">
+            <Skeleton className={"w-full h-80 rounded-xl"} />
           </div>
-        </div>
+        ) : (
+          <div className="mx-auto xl:hidden block">
+            <Carousel setApi={setApi} className="w-full max-w-xs">
+              <CarouselContent>
+                {images.map((img, index) => (
+                  <CarouselItem key={index}>
+                    <Card className="m-px">
+                      <CardContent className="flex aspect-square items-center justify-center p-2">
+                        <img
+                          src={img}
+                          alt={data?.title}
+                          className="object-contain w-full h-full"
+                        />
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+
+            <div className="flex justify-center gap-2 py-2">
+              {Array.from({ length: count }).map((_, index) => (
+                <span
+                  key={index}
+                  className={`h-2 w-2 rounded-full transition-all ${
+                    current - 1 === index ? "bg-green-600 w-3" : "bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ===== Right: Details ===== */}
         <div className="space-y-6 bg-white p-6 rounded-xl mt-2 xl:mt-0">
-          <h1 className="text-3xl font-bold">{data.title}</h1>
+          {isLoading ? (
+            <Skeleton className={"w-full h-10 rounded-xl"} />
+          ) : (
+            <h1 className="text-3xl font-bold">{data?.title}</h1>
+          )}
 
-          <div className="flex items-center gap-2">
-            <Star className="text-yellow-500 fill-yellow-500 w-5 h-5" />
-            <span className="font-medium">{data.rating}</span>
-            <span className="text-gray-500">
-              ({data.reviews.length} reviews)
-            </span>
-          </div>
+          {isLoading ? (
+            <Skeleton className={"w-full h-5 rounded-xl"} />
+          ) : (
+            <div className="flex items-center gap-2">
+              <Star className="text-yellow-500 fill-yellow-500 w-5 h-5" />
+              <span className="font-medium">{data?.rating}</span>
+              <span className="text-gray-500">
+                ({data?.reviews?.length} reviews)
+              </span>
+            </div>
+          )}
 
-          {/* PRICE */}
-          <div className="flex items-center gap-4">
-            <span className="text-3xl font-bold text-green-600">
-              ${discountedPrice}
-            </span>
-            <span className="text-lg line-through text-gray-800">
-              ${data.price}
-            </span>
-            <Badge variant="destructive">-{data.discountPercentage}%</Badge>
-          </div>
+          {isLoading ? (
+            <Skeleton className={"w-full h-10 rounded-xl"} />
+          ) : (
+            <div className="flex items-center gap-4">
+              <span className="text-3xl font-bold text-green-600">
+                ${discountedPrice}
+              </span>
+              <span className="text-lg line-through text-gray-800">
+                ${data?.price}
+              </span>
+              <Badge variant="destructive">-{data?.discountPercentage}%</Badge>
+            </div>
+          )}
 
           {/* STOCK */}
           <div className="space-y-2">
-            <p className="font-medium">
-              Availability:{" "}
-              <span className="text-green-600">{data.availabilityStatus}</span>
-            </p>
-            <p>Stock: {data.stock}</p>
-            <p>Minimum order: {data.minimumOrderQuantity}</p>
+            {isLoading ? (
+              <Skeleton className={"w-full h-5 rounded-xl"} />
+            ) : (
+              <p className="font-medium">
+                Availability:{" "}
+                <span className="text-green-600">
+                  {data?.availabilityStatus}
+                </span>
+              </p>
+            )}
+            {isLoading ? (
+              <Skeleton className={"w-full h-5 rounded-xl"} />
+            ) : (
+              <p>Stock: {data?.stock}</p>
+            )}
+            {isLoading ? (
+              <Skeleton className={"w-full h-5 rounded-xl"} />
+            ) : (
+              <p>Minimum order: {data?.minimumOrderQuantity}</p>
+            )}
           </div>
 
           {/* EXTRA INFO */}
           <div className="space-y-2 text-sm">
-            <p>
-              <b>Brand:</b> {data.brand}
-            </p>
-            <p>
-              <b>SKU:</b> {data.sku}
-            </p>
-            <p>
-              <b>Shipping:</b> {data.shippingInformation}
-            </p>
-            <p>
-              <b>Return:</b> {data.returnPolicy}
-            </p>
-            <p>
-              <b>Warranty:</b> {data.warrantyInformation}
-            </p>
-            <p>
-              <b>Dimensions:</b> {data.dimensions.width} ×{" "}
-              {data.dimensions.height} × {data.dimensions.depth}
-            </p>
-            <p>
-              <b>Weight:</b> {data.weight}g
-            </p>
+            {isLoading ? (
+              <Skeleton className={"w-full h-4 rounded-xl"} />
+            ) : (
+              <p>
+                <b>Brand:</b> {data?.brand}
+              </p>
+            )}
+            {isLoading ? (
+              <Skeleton className={"w-full h-4 rounded-xl"} />
+            ) : (
+              <p>
+                <b>SKU:</b> {data?.sku}
+              </p>
+            )}
+            {isLoading ? (
+              <Skeleton className={"w-full h-4 rounded-xl"} />
+            ) : (
+              <p>
+                <b>Shipping:</b> {data?.shippingInformation}
+              </p>
+            )}
+            {isLoading ? (
+              <Skeleton className={"w-full h-4 rounded-xl"} />
+            ) : (
+              <p>
+                <b>Return:</b> {data?.returnPolicy}
+              </p>
+            )}
+            {isLoading ? (
+              <Skeleton className={"w-full h-4 rounded-xl"} />
+            ) : (
+              <p>
+                <b>Warranty:</b> {data?.warrantyInformation}
+              </p>
+            )}
+            {isLoading ? (
+              <Skeleton className={"w-full h-4 rounded-xl"} />
+            ) : (
+              <p>
+                <b>Dimensions:</b> {data?.dimensions?.width} ×{" "}
+                {data?.dimensions?.height} × {data?.dimensions?.depth}
+              </p>
+            )}
+            {isLoading ? (
+              <Skeleton className={"w-full h-4 rounded-xl"} />
+            ) : (
+              <p>
+                <b>Weight:</b> {data?.weight}g
+              </p>
+            )}
           </div>
         </div>
 
         {/* DESCRIPTION */}
         <div className="pt-6 border-t mt-5 xl:mt-0">
-          <h2 className="text-xl font-semibold mb-2">Description</h2>
-          <p className="text-gray-600">{data.description}</p>
+          {isLoading ? (
+            <Skeleton className={"w-full h-10 rounded-xl"} />
+          ) : (
+            <h2 className="text-xl font-semibold mb-2">Description</h2>
+          )}
+          {isLoading ? (
+            <Skeleton className={"w-full h-5 rounded-xl"} />
+          ) : (
+            <p className="text-gray-600">{data?.description}</p>
+          )}
         </div>
 
         {/* REVIEWS */}
+
         <div className="pt-6 border-t mt-5 xl:mt-0">
-          <h2 className="text-xl font-semibold mb-4">Reviews</h2>
+          {isLoading ? (
+            <Skeleton className={"w-full h-10 rounded-xl"} />
+          ) : (
+            <h2 className="text-xl font-semibold mb-4">Reviews</h2>
+          )}
+
           <div className="space-y-4">
-            {data.reviews.map((review, index) => (
+            {data?.reviews.map((review, index) => (
               <div key={index} className="bg-white rounded-xl p-4">
-                <div className="flex justify-between">
-                  <p className="font-medium">{review.reviewerName}</p>
-                  <span className="text-yellow-500">⭐ {review.rating}</span>
-                </div>
-                <p className="text-sm text-gray-500">{review.comment}</p>
+                {isLoading ? (
+                  <Skeleton className={"w-full h-10 rounded-xl"} />
+                ) : (
+                  <div className="flex justify-between">
+                    <p className="font-medium">{review?.reviewerName}</p>
+                    <span className="text-yellow-500">⭐ {review?.rating}</span>
+                  </div>
+                )}
+                {isLoading ? (
+                  <Skeleton className={"w-full h-5 rounded-xl"} />
+                ) : (
+                  <p className="text-sm text-gray-500">{review?.comment}</p>
+                )}
               </div>
             ))}
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function ProductSkeleton() {
-  return (
-    <div className="max-w-7xl mx-auto p-6 grid md:grid-cols-2 gap-12">
-      <div className="space-y-4">
-        <Skeleton className="w-full h-[500px] rounded-2xl" />
-        <div className="flex gap-4">
-          <Skeleton className="w-24 h-24 rounded-xl" />
-          <Skeleton className="w-24 h-24 rounded-xl" />
-          <Skeleton className="w-24 h-24 rounded-xl" />
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-3/4" />
-        <Skeleton className="h-6 w-1/3" />
-        <Skeleton className="h-10 w-1/2" />
-        <Skeleton className="h-32 w-full rounded-xl" />
-        <Skeleton className="h-12 w-full rounded-xl" />
-        <Skeleton className="h-12 w-full rounded-xl" />
-        <Skeleton className="h-24 w-full rounded-xl" />
       </div>
     </div>
   );

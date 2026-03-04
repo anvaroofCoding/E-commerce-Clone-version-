@@ -50,7 +50,7 @@ export default function Navbar() {
 
   return (
     <div
-      className={`container px-5 xl:block hidden bg-white sticky py-2 top-5 pb-3 duration-300 z-10 ${
+      className={`container px-5 xl:block hidden bg-white sticky py-2 top-5 pb-3 ${isLoading ? "pt-5" : "pt-2"} duration-300 z-10 ${
         suchOpen ? "rounded-t-xl" : "rounded-xl"
       }`}
     >
