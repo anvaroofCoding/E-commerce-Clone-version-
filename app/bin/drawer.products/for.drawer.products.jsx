@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { closeDrawer } from "@/app/features/navbar/navbarSlice";
+import {
+  addToCart,
+  closeDrawer,
+  decreaseCount,
+  increaseCount,
+} from "@/app/features/navbar/navbarSlice";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -31,37 +36,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { Minus, Plus } from "lucide-react";
 
 export function ForDrawerProducts() {
-  const cart = JSON.parse(localStorage.getItem("cart") ?? "[]");
-  const existing = cart.find((item) => item.id === product.id);
   const dispatch = useDispatch();
   const { isOpen, product_data } = useSelector((state) => state.navbar);
+  const cart = useSelector((state) => state.navbar.cart);
+  const existing = cart.find((item) => {
+    return item?.id == product_data?.id;
+  });
 
   const [productLink, setProductLink] = useState("");
   const [copied, setCopied] = useState(false);
-
-  function addToCart(product) {
-    if (existing) {
-      if (existing.count < product.stock) {
-        existing.count += 1;
-      }
-    } else {
-      cart.push({ ...product, count: 1 });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }
-
-  function increaseCount() {
-    const cart = JSON.parse(localStorage.getItem("cart") ?? "[]");
-
-    const item = cart.find((p) => p.id === product_data.id);
-
-    if (item && item.count < item.stock) {
-      item.count += 1;
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }
 
   useEffect(() => {
     if (product_data?.id) {
@@ -223,14 +206,18 @@ export function ForDrawerProducts() {
             <div className="grid grid-cols-3 gap-10 items-center">
               <Button
                 className="bg-red-600 hover:bg-red-700 transition"
-                onClick={increaseCount}
+                onClick={() => {
+                  dispatch(decreaseCount(product_data.id));
+                }}
               >
                 <Minus size={18} />
               </Button>
-              <p className="text-center">10</p>
+              <p className="text-center">{existing.count}</p>
               <Button
-                className="bg-green-600 hover:bg-green-700 transition"
-                onClick={addToCart}
+                
+                onClick={() => {
+                  dispatch(increaseCount(product_data.id));
+                }}
               >
                 <Plus size={18} />
               </Button>
@@ -238,7 +225,9 @@ export function ForDrawerProducts() {
           ) : (
             <Button
               className="bg-green-600 hover:bg-green-700 transition"
-              onClick={addToCart}
+              onClick={() => {
+                dispatch(addToCart(product_data));
+              }}
             >
               Add <IconShoppingCart size={18} />
             </Button>
